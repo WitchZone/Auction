@@ -11,8 +11,11 @@
                 {{ lot.published_date}} by {{lot.author}}
             </div>
         {% endif %}
-        <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-        <h1>{{ lot.title }}</h1>
+        
+        <div class="h1">{{ lot.title }}
+            <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+            <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+        </div> 
         <p>{{ lot.text|linebreaksbr }}</p>
     </div>
 {% endblock %}

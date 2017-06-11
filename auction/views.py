@@ -36,6 +36,12 @@ def lot_edit(request, pk):
         return render(request, 'auction/lot_edit.html', {'form': form})
 
 @login_required
+def lot_remove(request, pk):
+    lot = get_object_or_404(Lot_sub, pk=pk)
+    lot.delete()
+    return redirect('lost_list')
+
+@login_required
 def lot_new(request):
         if request.method == "POST":
             form = LotForm(request.POST)
@@ -88,7 +94,7 @@ def user_login(request):
             return HttpResponseRedirect(reverse('lot_list'))
         else:
             print('Invalid login details: {0}, {1}'.format(username, password))
-            return HttpResponse('Invalid login details')
+            return HttpResponseRedirect(reverse('login'))
     else:
         return render(request, 'auction/login.html', {})
 

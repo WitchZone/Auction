@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-    <h1>New lot</h1>
+    <div class="h1">New lot</div>
     <form method="POST" class="post-form">{% csrf_token %} 
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Save</button>

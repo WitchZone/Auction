@@ -10,7 +10,7 @@
             <div class="date">
                 {{ lot.published_date }} by {{ lot.author }}
             </div>
-            <h1><a href="{% url 'lot_detail' pk=lot.pk %}">{{ lot.title }}</a></h1>
+            <div class="h1"><a href="{% url 'lot_detail' pk=lot.pk %}">{{ lot.title }}</a></div>
             <p>{{ lot.text|linebreaksbr }}</p>
         </div>
         <hr>
