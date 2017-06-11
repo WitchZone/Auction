@@ -17,11 +17,29 @@
                 <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
             {% endif %}
-        </div> 
+        </div>
         <div class="description">{{ lot.text|linebreaksbr }}</div>
         <div class="cur_price">
-            Current price: {{lot.starting_price}} Tokens.
+            Current price: {{lot.starting_price}} Tokens
+        </div>
+        <div class="cur_price">
+            End date: {{ lot.end_date}}
         </div>
         <hr>
+        {% if lot.end_date and lot.end_date > date_now  and lot.is_open %}
+            <div class="h2">Status: Lot open</div>
+        {% else %}
+            {% if lot.is_open == False %}
+                <div class="h2">Status: The lot is closed</div>
+            {% else %}
+                <div class="h2">Status: Time is over, wait for confirmation</div>
+            {% endif %}
+        {% endif %}
+        <hr>
+        {% if ed %} 
+            <div class="description">You can not put on your lot</div>
+        {% else %}
+            <div class="description">Ставь</div>
+        {% endif %}
     </div>
 {% endblock %}

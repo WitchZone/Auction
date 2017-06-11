@@ -25,4 +25,4 @@ class UserProfileForm(BaseForm):
 class LotForm(BaseForm):
     class Meta:
         model = Lot_sub
-        fields = ('title', 'text', 'starting_price')
+        fields = ('title', 'text', 'starting_price', 'end_date')

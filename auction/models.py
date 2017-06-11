@@ -14,6 +14,7 @@ class Lot_sub(models.Model):
             blank=True, null=True)
     end_date = models.DateTimeField(
             blank=True, null=True)
+    is_open = models.BooleanField(default=True)
 
     def publish(self):
         self.published_date = timezone.now()
@@ -26,6 +27,13 @@ class UserProfile(models.Model):
     user = models.OneToOneField(User)
 
     balance = models.BigIntegerField()
-    
+
     def __str__(self):
-        return self.user.username       
+        return self.user.username
+
+class LotRate(models.Model):
+    participant = models.ForeignKey('auth.User')
+    rate = models.BigIntegerField()
+
+    def __str__(self):
+        return self.rate

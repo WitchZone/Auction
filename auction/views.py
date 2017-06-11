@@ -19,11 +19,12 @@ def lot_list(request):
 def lot_detail(request, pk):
         lot = get_object_or_404(Lot_sub, pk=pk)
         user = request.user
+        date_now = timezone.now()
         if (lot.author == user):
             ed = True
         else:
             ed = False
-        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed})
+        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now})
 
 @login_required
 def lot_edit(request, pk):
