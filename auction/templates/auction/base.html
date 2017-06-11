@@ -10,10 +10,12 @@
         {% block title_block %} 
         {% endblock %}
     </title>
+    <script src="{% static "js/jquery.js" %}"></script>
     <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}">
     <link rel="stylesheet" href="{% static 'css/auction.css' %}">
     <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet" type="text/css">
+    <script href="{% static "js/bootstrap.min.js" %}"></script>
 </head>
 
 <body>
@@ -27,6 +29,7 @@
                     <li><a href="{% url 'lot_list' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                     {% if user.is_authenticated %}
                         <li><a href="{% url 'lot_new' %}"><span class="glyphicon glyphicon-plus"></span> New</a></li>
+                        <li><a href="{% url 'balance' %}"><span class="glyphicon glyphicon-credit-card"></span> Balance</a></li>
                     {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import Lot_sub
-from .models import UserProfile
+
+from .models import Lot_sub, UserProfile
 
 class BaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -23,6 +23,6 @@ class UserProfileForm(BaseForm):
         fields = ()
 
 class LotForm(BaseForm):
-        class Meta:
-            model = Lot_sub
-            fields = ('title', 'text',)
+    class Meta:
+        model = Lot_sub
+        fields = ('title', 'text', 'starting_price')

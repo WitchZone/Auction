@@ -28,12 +28,12 @@
 }
 
 .date {
-        float: right;
-        color: #828282;
+    float: right;
+    color: #828282;
 }
 
 div {
-        font-family: 'PT Sans', sans-serif;
+    font-family: 'PT Sans', sans-serif;
 }
 
 
@@ -48,6 +48,16 @@ div {
 
 .h1 a:active {
     color: #999;
+}
+
+.description {
+    font-size: 18px;
+    padding-bottom: 10px; 
+}
+
+.cur_price {
+    font-size: 16px;
+    text-align: right;
 }
 
 nav {

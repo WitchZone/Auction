@@ -13,18 +13,23 @@ from .models import UserProfile
 # Create your views here.
 
 def lot_list(request):
-    lots = Lot_sub.objects.filter(published_date__lte=timezone.now()).order_by('published_date')
+    lots = Lot_sub.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
     return render(request, 'auction/lot.html', {'lots': lots})
 
 def lot_detail(request, pk):
         lot = get_object_or_404(Lot_sub, pk=pk)
-        return render(request, 'auction/lot_detail.html', {'lot': lot})
+        user = request.user
+        if (lot.author == user):
+            ed = True
+        else:
+            ed = False
+        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed})
 
 @login_required
 def lot_edit(request, pk):
-        post = get_object_or_404(Lot_sub, pk=pk)
+        lot = get_object_or_404(Lot_sub, pk=pk)
         if request.method == "POST":
-            form = LotForm(request.POST, instance=post)
+            form = LotForm(request.POST, instance=lot)
             if form.is_valid():
                 lot = form.save(commit=False)
                 lot.author = request.user
@@ -32,14 +37,25 @@ def lot_edit(request, pk):
                 lot.save()
                 return redirect('lot_detail', pk=lot.pk)
         else:
-            form = LotForm(instance=post)
+            form = LotForm(instance=lot)
         return render(request, 'auction/lot_edit.html', {'form': form})
 
 @login_required
 def lot_remove(request, pk):
     lot = get_object_or_404(Lot_sub, pk=pk)
     lot.delete()
-    return redirect('lost_list')
+    return redirect('lot_list')
+
+@login_required
+def user_balance(request):
+    user = request.user
+    bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
+    if request.method == "POST":
+        balance = int(request.POST.get('balance'))
+        new_bal = bal + balance
+        UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
+        return HttpResponseRedirect(reverse('balance'))
+    return render(request, 'auction/balance.html', {'bal': bal})
 
 @login_required
 def lot_new(request):
@@ -69,6 +85,7 @@ def register(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
+            profile.balance = 5;
             profile.save()
 
             registered = True

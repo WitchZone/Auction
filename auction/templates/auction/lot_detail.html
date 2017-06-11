@@ -13,9 +13,15 @@
         {% endif %}
         
         <div class="h1">{{ lot.title }}
-            <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
-            <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+            {% if ed %}
+                <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
+            {% endif %}
         </div> 
-        <p>{{ lot.text|linebreaksbr }}</p>
+        <div class="description">{{ lot.text|linebreaksbr }}</div>
+        <div class="cur_price">
+            Current price: {{lot.starting_price}} Tokens.
+        </div>
+        <hr>
     </div>
 {% endblock %}
