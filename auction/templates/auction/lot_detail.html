@@ -8,9 +8,10 @@
     <div class="post">
         {% if lot.published_date %}
             <div class="date">
-                {{ lot.published_date }}
+                {{ lot.published_date}} by {{lot.author}}
             </div>
         {% endif %}
+        <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
         <h1>{{ lot.title }}</h1>
         <p>{{ lot.text|linebreaksbr }}</p>
     </div>

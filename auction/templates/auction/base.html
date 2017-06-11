@@ -26,7 +26,7 @@
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'lot_list' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href=""><span class="glyphicon glyphicon-plus"></span> New</a></li>
+                        <li><a href="{% url 'lot_new' %}"><span class="glyphicon glyphicon-plus"></span> New</a></li>
                     {% endif %}
                 </ul>
                 <ul class="nav navbar-nav navbar-right">
@@ -44,7 +44,7 @@
             </div>
         </nav>
         <div class="row main_text">
-            <div class="col-md-8">
+            <div class="col-md-12">
                 {% block content %}
                 {% endblock %}
             </div>

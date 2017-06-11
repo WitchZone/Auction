@@ -8,10 +8,11 @@
     {% for lot in lots %}
         <div class="post">
             <div class="date">
-                published: {{ lot.published_date }}
+                {{ lot.published_date }} by {{ lot.author }}
             </div>
             <h1><a href="{% url 'lot_detail' pk=lot.pk %}">{{ lot.title }}</a></h1>
             <p>{{ lot.text|linebreaksbr }}</p>
         </div>
+        <hr>
     {% endfor %}
 {% endblock content %}

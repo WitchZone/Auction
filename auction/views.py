@@ -3,10 +3,11 @@ from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
+from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
 from .models import Lot_sub
-from .forms import UserForm, UserProfileForm
+from .forms import UserForm, UserProfileForm, LotForm
 from .models import UserProfile
 
 # Create your views here.
@@ -18,6 +19,35 @@ def lot_list(request):
 def lot_detail(request, pk):
         lot = get_object_or_404(Lot_sub, pk=pk)
         return render(request, 'auction/lot_detail.html', {'lot': lot})
+
+@login_required
+def lot_edit(request, pk):
+        post = get_object_or_404(Lot_sub, pk=pk)
+        if request.method == "POST":
+            form = LotForm(request.POST, instance=post)
+            if form.is_valid():
+                lot = form.save(commit=False)
+                lot.author = request.user
+                lot.published_date = timezone.now()
+                lot.save()
+                return redirect('lot_detail', pk=lot.pk)
+        else:
+            form = LotForm(instance=post)
+        return render(request, 'auction/lot_edit.html', {'form': form})
+
+@login_required
+def lot_new(request):
+        if request.method == "POST":
+            form = LotForm(request.POST)
+            if form.is_valid():
+                lot = form.save(commit=False)
+                lot.author = request.user
+                lot.published_date = timezone.now()
+                lot.save()
+                return redirect('lot_detail', pk=lot.pk)
+        else:
+            form = LotForm()
+        return render(request, 'auction/lot_edit.html', {'form': form})
 
 def register(request):
     registered = False

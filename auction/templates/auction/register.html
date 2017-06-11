@@ -10,7 +10,7 @@
         <a href="{% url 'index' %}">Return to homepage</a><br />
     {% else %}
         <div class="h4">Register:</div>
-        <form id="user_form" method="post" action"={% url 'register' %}"
+        <form id="user_form" class="post-form" method="post" action"={% url 'register' %}"
               enctype="multipart/form-data">
 
             {% csrf_token %}

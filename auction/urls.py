@@ -8,4 +8,6 @@ urlpatterns = [
     url(r'^login/$', views.user_login, name='login'),
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^lot/(?P<pk>[0-9]+)/$', views.lot_detail, name='lot_detail'),
+    url(r'^lot/new/$', views.lot_new, name='lot_new'),
+    url(r'^post/(?P<pk>[0-9]+)/edit/$', views.lot_edit, name='lot_edit'),
 ]
