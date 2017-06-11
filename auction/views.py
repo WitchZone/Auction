@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
+
 from .models import Lot_sub
 from .forms import UserForm, UserProfileForm
 from .models import UserProfile
@@ -32,8 +33,6 @@ def register(request):
 
             profile = profile_form.save(commit=False)
             profile.user = user
-            profile.score = 0
-            profile.games_played = 0
             profile.save()
 
             registered = True

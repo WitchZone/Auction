@@ -22,3 +22,7 @@ class UserProfileForm(BaseForm):
         model = UserProfile
         fields = ()
 
+class LotForm(BaseForm):
+        class Meta:
+            model = Lot_sub
+            fields = ('title', 'text',)
