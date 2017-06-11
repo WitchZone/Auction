@@ -5,8 +5,13 @@
 </head>
 
 <body>
-    <p>Hi there!</p>
-    <p>It works!</p>
+    {% for lot in lots %} 
+    <div>
+        <p>published: {{ lot.published_date }}</p>
+        <h1><a href="">{{ lot.title }}</a></h1>
+        <p>{{ lot.text|linebreaksbr }}</p>
+    </div>
+    {% endfor %}
 </body>
 
 </html>
