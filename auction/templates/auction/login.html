@@ -1,0 +1,21 @@
+{% extends 'auction/base.html' %}
+
+{% block title_block %}
+    Login
+{% endblock %}
+
+{% block content %}
+    <div class="h4">Login:</div>
+    <form id="login_form" method="post" action"={% url 'login' %}">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" class="form-control" id="username" name="username" placeholder="Enter the Username" value="">
+        </div>
+        <div class="form-group">
+            <label for="inputPassword">Password:</label>
+            <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Enter the Password" value="">
+        </div>
+        <input type="submit" class="btn btn-default" name="submit" value="Login" />
+    </form>
+{% endblock %}

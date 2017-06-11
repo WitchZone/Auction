@@ -1,0 +1,17 @@
+{% extends 'auction/base.html' %}
+
+{% block title_block %} 
+    Home
+{% endblock %}
+
+{% block content %}
+    {% for lot in lots %}
+        <div class="post">
+            <div class="date">
+                published: {{ lot.published_date }}
+            </div>
+            <h1><a href="{% url 'lot_detail' pk=lot.pk %}">{{ lot.title }}</a></h1>
+            <p>{{ lot.text|linebreaksbr }}</p>
+        </div>
+    {% endfor %}
+{% endblock content %}

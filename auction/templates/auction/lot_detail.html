@@ -1,0 +1,17 @@
+{% extends 'auction/base.html' %}
+
+{% block title_block %} 
+    {{ lot.title }}
+{% endblock %}
+
+{% block content %}
+    <div class="post">
+        {% if lot.published_date %}
+            <div class="date">
+                {{ lot.published_date }}
+            </div>
+        {% endif %}
+        <h1>{{ lot.title }}</h1>
+        <p>{{ lot.text|linebreaksbr }}</p>
+    </div>
+{% endblock %}
