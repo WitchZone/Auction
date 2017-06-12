@@ -26,13 +26,18 @@
             End date: {{ lot.end_date}}
         </div>
         <hr>
+        {% if ed %} 
+            <form id="sold" class="post-form save" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
+                {% csrf_token %}
+                <input type="submit" class="btn btn-default" name="submit" value="Sold lot"/>
+            </form>
+        {% endif %}
         {% if lot.end_date and lot.end_date > date_now  and lot.is_open %}
             <div class="h2">Status: Lot open</div>
-
             {% if ed %} 
             {% else %}
             <hr>
-            <form id="user_form" class="post-form" method="post" action "={% url 'lot_detail' pk=lot.pk %}">
+            <form id="form" class="post-form" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
                 {% csrf_token %}
                 <div class="form-group">
                     <label class="save">{{ mess }}</label>

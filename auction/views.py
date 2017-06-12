@@ -28,19 +28,40 @@ def lot_detail(request, pk):
         else:
             ed = False
         if request.method == "POST":
-            form = RateForm(request.POST);
-            if form.is_valid():
-                rate_lot = form.save(commit=False)
-                if rate_lot.rate > start_p:
-                    rate_lot.participant = user
-                    print(rate_lot.participant)
-                    rate_lot.lot_id = lot
-                    rate_lot.save()
-                    Lot_sub.objects.filter(pk=pk).update(starting_price=rate_lot.rate)
-                    return redirect('lot_detail', pk=lot.pk)
-                else:
-                    mess = "The rate must be greater than the current price"
-                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list})
+            button_name = request.POST.get('submit')
+            if button_name == "Rate":
+                print("--==I went through button Rate==--")
+                form = RateForm(request.POST);
+                if form.is_valid():
+                    rate_lot = form.save(commit=False)
+                    if rate_lot.rate > start_p:
+                        rate_lot.participant = user
+                        print(rate_lot.participant)
+                        rate_lot.lot_id = lot
+                        rate_lot.save()
+                        Lot_sub.objects.filter(pk=pk).update(starting_price=rate_lot.rate)
+                        return redirect('lot_detail', pk=lot.pk)
+                    else:
+                        mess = "The rate must be greater than the current price"
+                        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list})
+            elif button_name == "Sold lot":
+                print('--==I went through button Sold lot==--')
+                bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
+                for backer in backers_list:
+                    bal_curr = UserProfile.objects.filter(user=backer.participant).values('balance')[0]['balance']
+                    check_sold = False
+                    if bal_curr > backer.rate:
+                        print('Sold by', backer.participant, ' behind', backer.rate, 'tokens')
+                        new_bal_curr = bal_curr - backer.rate
+                        new_bal = bal + backer.rate
+                        UserProfile.objects.filter(user=backer.participant).update(balance=new_bal_curr)
+                        UserProfile.objects.filter(user=backer.participant).update(balance=new_bal_curr)
+                        Lot_sub.objects.filter(pk=pk).update(winner=backer.participant)
+                        return redirect('lot_detail', pk=lot.pk)
+
+            else:
+                print('--==How did I even find myself here?==--')
+                return redirect('lot_detail', pk=lot.pk)
         else:
             form = RateForm()
         return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list})
