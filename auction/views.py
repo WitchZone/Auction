@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 
 from .models import Lot_sub
 from .forms import UserForm, UserProfileForm, LotForm, RateForm
-from .models import UserProfile, Lot_sub
+from .models import UserProfile, Lot_sub, LotRate
 
 # Create your views here.
 
@@ -21,26 +21,29 @@ def lot_detail(request, pk):
         user = request.user
         date_now = timezone.now()
         start_p = Lot_sub.objects.filter(pk=pk).values('starting_price')[0]['starting_price']
-
+        mess = ""
+        backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')[:10]
+        if (lot.author == user):
+            ed = True
+        else:
+            ed = False
         if request.method == "POST":
             form = RateForm(request.POST);
             if form.is_valid():
                 rate_lot = form.save(commit=False)
                 if rate_lot.rate > start_p:
                     rate_lot.participant = user
+                    print(rate_lot.participant)
                     rate_lot.lot_id = lot
                     rate_lot.save()
                     Lot_sub.objects.filter(pk=pk).update(starting_price=rate_lot.rate)
                     return redirect('lot_detail', pk=lot.pk)
                 else:
-                    err_mess = "The rate must be greater than the current price"
+                    mess = "The rate must be greater than the current price"
+                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list})
         else:
             form = RateForm()
-        if (lot.author == user):
-            ed = True
-        else:
-            ed = False
-        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form})
+        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list})
 
 @login_required
 def lot_edit(request, pk):

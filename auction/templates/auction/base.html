@@ -23,7 +23,7 @@
         <nav class="navbar navbar-inverse">
             <div class="container-fluid">
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="">Auction</a>
+                    <a class="navbar-brand" href="/">Auction</a>
                 </div>
                 <ul class="nav navbar-nav">
                     <li><a href="{% url 'lot_list' %}"><span class="glyphicon glyphicon-home"></span> Home</a></li>
@@ -35,7 +35,7 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if user.is_authenticated %}
                     <li>
-                        <<a class="navbar-brand" href="#">Hello, {{ user.username }}</a>
+                        <<a class="navbar-brand">Hello, {{ user.username }}</a>
                     </li>
                     <li><a href="{% url 'logout' %}"><span class="glyphicon glyphicon-log-out"></span> Logout</a></li>
                     {% else %}
