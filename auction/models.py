@@ -8,12 +8,9 @@ class Lot_sub(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     starting_price = models.BigIntegerField()
-    created_date = models.DateTimeField(
-            default=timezone.now)
-    published_date = models.DateTimeField(
-            blank=True, null=True)
-    end_date = models.DateTimeField(
-            blank=True, null=True)
+    created_date = models.DateTimeField(default=timezone.now)
+    published_date = models.DateTimeField(blank=True, null=True)
+    end_date = models.DateTimeField(blank=True, null=True)
     is_open = models.BooleanField(default=True)
 
     def publish(self):
@@ -33,7 +30,8 @@ class UserProfile(models.Model):
 
 class LotRate(models.Model):
     participant = models.ForeignKey('auth.User')
+    lot_id = models.ForeignKey('Lot_sub')
     rate = models.BigIntegerField()
 
     def __str__(self):
-        return self.rate
+        return self.lot_id
