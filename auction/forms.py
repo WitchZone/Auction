@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Lot_sub, UserProfile, LotRate
+from .models import Lot_sub, UserProfile, LotRate, Winner
 
 class BaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -31,3 +31,8 @@ class RateForm(BaseForm):
     class Meta:
         model = LotRate
         fields = ('rate',)
+
+class WinnerForm(BaseForm):
+    class Meta:
+        model = Winner
+        fields = ()

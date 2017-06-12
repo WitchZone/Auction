@@ -16,6 +16,12 @@
     width: 100%;
 }
 
+.message {
+    font-size: 20px;
+    color: #900;
+    text-align: center;
+}
+
 .top-menu, .top-menu:hover, .top-menu:visited {
     color: #fff;
     float: right;

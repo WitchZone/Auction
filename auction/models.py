@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 # Create your models here.
 class Lot_sub(models.Model):
     author = models.ForeignKey('auth.User')
-    winner = models.CharField(max_length=150, null=True)
     title = models.CharField(max_length=200)
     text = models.TextField()
     starting_price = models.PositiveIntegerField()
@@ -33,6 +32,13 @@ class LotRate(models.Model):
     participant = models.ForeignKey('auth.User')
     lot_id = models.ForeignKey('Lot_sub')
     rate = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.lot_id
+
+class Winner(models.Model):
+    winner = models.ForeignKey('auth.User')
+    lot_id = models.OneToOneField('Lot_sub')
 
     def __str__(self):
         return self.lot_id

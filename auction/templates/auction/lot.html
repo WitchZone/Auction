@@ -10,7 +10,14 @@
             <div class="date">
                 {{ lot.published_date }} by {{ lot.author }}
             </div>
-            <div class="h1"><a href="{% url 'lot_detail' pk=lot.pk %}">{{ lot.title }}</a></div>
+            <div class="h1">
+                <a href="{% url 'lot_detail' pk=lot.pk %}">
+                    {{ lot.title }}
+                    {% if lot.is_open == False %}
+                        [Sold]
+                    {% endif%}
+                </a>
+            </div>
             <div class="description">{{ lot.text|linebreaksbr }}</div>
             <div class="cur_price">
                  Current price: {{lot.starting_price}} Tokens.
