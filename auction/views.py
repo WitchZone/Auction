@@ -92,7 +92,11 @@ def lot_edit(request, pk):
                 return redirect('lot_detail', pk=lot.pk)
         else:
             form = LotForm(instance=lot)
-        return render(request, 'auction/lot_edit.html', {'form': form})
+            if (lot.author == request.user):
+                ed = True
+            else:
+                ed = False
+        return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
 
 @login_required
 def lot_remove(request, pk):
@@ -129,7 +133,8 @@ def lot_new(request):
                 return redirect('lot_detail', pk=lot.pk)
         else:
             form = LotForm()
-        return render(request, 'auction/lot_edit.html', {'form': form})
+            ed = True
+        return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
 
 def register(request):
     registered = False

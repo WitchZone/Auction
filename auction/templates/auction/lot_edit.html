@@ -5,9 +5,13 @@
 {% endblock %}
 
 {% block content %}
+    {% if ed %}
     <div class="h1">New lot</div>
     <form method="POST" class="post-form">{% csrf_token %} 
         {{ form.as_p }}
         <button type="submit" class="save btn btn-default">Save</button>
     </form>
+    {% else %}
+    <div class="message">Hey little pie, this is not your lot.</div>
+    {% endif %}
 {% endblock %}
