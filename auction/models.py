@@ -8,6 +8,7 @@ class Lot_sub(models.Model):
     title = models.CharField(max_length=200)
     text = models.TextField()
     starting_price = models.PositiveIntegerField()
+    views = models.PositiveIntegerField(default=0)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)

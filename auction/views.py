@@ -11,7 +11,6 @@ from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm
 from .models import UserProfile, Lot_sub, LotRate, Winner
 
 # Create your views here.
-
 def lot_list(request):
     lots = Lot_sub.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
     return render(request, 'auction/lot.html', {'lots': lots})
@@ -184,3 +183,16 @@ def user_login(request):
 def user_logout(request):
     logout(request)
     return HttpResponseRedirect(reverse('lot_list'))
+
+
+def get_au_views(request):
+    if request.method == 'POST':
+        lot_id = request.get('lot_id')
+        lot = Lot_sub.get(pk=lot_id)
+        lot.views += 1
+        lot.save()
+        response = {}
+        return HttpResponse(
+            json.dumps(response),
+            content_type='application/json'
+        )
