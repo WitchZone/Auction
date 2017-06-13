@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from django.http import HttpResponse, HttpResponseRedirect
@@ -187,11 +188,11 @@ def user_logout(request):
 
 def get_au_views(request):
     if request.method == 'POST':
-        lot_id = request.get('lot_id')
-        lot = Lot_sub.get(pk=lot_id)
+        lot_id = request.POST.get('lot_id')
+        lot = Lot_sub.objects.get(pk=lot_id)
         lot.views += 1
         lot.save()
-        response = {}
+        response = { "views": lot.views }
         return HttpResponse(
             json.dumps(response),
             content_type='application/json'
