@@ -34,7 +34,7 @@
 }
 
 .date {
-    float: right;
+    text-align: right;
     color: #828282;
 }
 
@@ -77,6 +77,11 @@ div {
     font-size: 20px;
     font-weight: bold;
     text-align: center;
+}
+
+.img-resize {
+    max-width:100%;
+    max-height:100%;
 }
 
 nav {

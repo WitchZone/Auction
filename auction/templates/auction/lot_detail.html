@@ -31,9 +31,9 @@
 
         <div class="row">
             <div class="col-md-3 pad">
-                <img src="{{ lot.image.url }}" class="img-rounded" style="max-width:100%;max-height:100%;">
+                <img src="{{ lot.image.url }}" class="img-rounded img-resize">
                 <div class="cur_center">
-                    {% if ed %}
+                    {% if ed or lot.is_open == False %}
                         Views: {{lot.views}}
                     {% else %}
                         {% if user.is_authenticated %}
@@ -59,10 +59,10 @@
             <div class="col-md-8">
                 <div class="cur_left">
                     {% if lot.end_date and lot.end_date > date_now  and lot.is_open %}
-                        Status: Lot open
+                        Status: Open
                     {% else %}
                         {% if lot.is_open == False %}
-                            Status: The lot is closed
+                            Status: Closed
                         {% else %}
                             Status: Time is over, wait for confirmation
                         {% endif %}
