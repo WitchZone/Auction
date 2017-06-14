@@ -12,7 +12,7 @@ class BaseForm(forms.ModelForm):
 
 class UserForm(BaseForm):
     password = forms.CharField(widget=forms.PasswordInput())
-
+    password_confirmation = forms.CharField(widget=forms.PasswordInput())
     class Meta:
         model = User
         fields = ('username', 'password')
@@ -23,6 +23,7 @@ class UserProfileForm(BaseForm):
         fields = ()
 
 class LotForm(BaseForm):
+    image = forms.ImageField(required=False)
     class Meta:
         model = Lot_sub
         fields = ('title', 'text', 'starting_price', 'end_date')

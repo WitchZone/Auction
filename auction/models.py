@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User
+from PIL import Image
 
 # Create your models here.
 class Lot_sub(models.Model):
@@ -9,6 +10,7 @@ class Lot_sub(models.Model):
     text = models.TextField()
     starting_price = models.PositiveIntegerField()
     views = models.PositiveIntegerField(default=0)
+    image = models.ImageField(upload_to='ads/', null=True)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)

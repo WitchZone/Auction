@@ -7,7 +7,6 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
 
-from .models import Lot_sub
 from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm
 from .models import UserProfile, Lot_sub, LotRate, Winner
 
@@ -118,6 +117,7 @@ def user_balance(request):
 @login_required
 def lot_new(request):
         if request.method == "POST":
+            print('Ima in lot new post')
             winnerform = WinnerForm()
             form = LotForm(request.POST)
             if form.is_valid():
@@ -132,6 +132,7 @@ def lot_new(request):
                 win.save()
                 return redirect('lot_detail', pk=lot.pk)
         else:
+            print('Ima in lot new else')
             form = LotForm()
             ed = True
         return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})

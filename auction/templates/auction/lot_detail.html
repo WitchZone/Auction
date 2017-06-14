@@ -6,26 +6,36 @@
 
 {% block content %}
     <div class="post">
-        <div class="message">{{ mess }}</div>
+        
+        <!--img src="{{ lot.image.url }}" class="img-rounded" style="width:300px;height:auto;"-->
         {% if lot.published_date %}
             <div class="date">
                 {{ lot.published_date}} by {{lot.author}}
             </div>
         {% endif %}
-        <div class="h1">{{ lot.title }}
-            {% if lot.is_open == False %}
-                {% for item in win %} 
-                    [Sold] Winner: {{item.winner}} 
-                {% endfor %}
-            {% endif%}
-            {% if ed %}
-                {% if lot.is_open %}
-                    <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+        <div class="row">
+            <div class="h1 col-md-12">{{ lot.title }}
+                {% if lot.is_open == False %}
+                    {% for item in win %} 
+                        [Sold] Winner: {{item.winner}} 
+                    {% endfor %}
+                {% endif%}
+                {% if ed %}
+                    {% if lot.is_open %}
+                        <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
+                    {% endif %}
+                    <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
                 {% endif %}
-                <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
-            {% endif %}
+            </div>
+        <div>
+        <div class="row">
+            <div class="col-md-3">Картинка</div>
+            <div class="col-md-9">
+                <div class="description">{{ lot.text|linebreaksbr }}</div>
+            </div>
         </div>
-        <div class="description">{{ lot.text|linebreaksbr }}</div>
+        
+
         <div class="cur_price">
             Current price: {{lot.starting_price}} Tokens
         </div>
@@ -89,6 +99,7 @@
         {% else %}
             <div class="h4">There are no participant<div>
         {% endif %}
+        <div class="message">{{ mess }}</div>
     </div>
     <hr>
 {% endblock %}
