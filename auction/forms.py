@@ -26,7 +26,7 @@ class LotForm(BaseForm):
     image = forms.ImageField(required=False)
     class Meta:
         model = Lot_sub
-        fields = ('title', 'text', 'starting_price', 'end_date')
+        fields = ('title', 'text', 'starting_price', 'end_date', 'image')
 
 class RateForm(BaseForm):
     class Meta:

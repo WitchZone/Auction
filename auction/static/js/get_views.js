@@ -13,7 +13,7 @@ $(function() {
             data : { lot_id: lot_id,
                      csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
             success : function (json) {
-                $('#user_views').text('Просмотров: '+json['views']);
+                $('#user_views').text('Views: '+json['views']);
                 console.log("success");
             },
             error : function(xhr, errmsg, err) {

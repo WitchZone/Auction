@@ -19,8 +19,10 @@
                 </a>
             </div>
             <div class="description">{{ lot.text|linebreaksbr }}</div>
-            <div class="cur_price">
-                 Current price: {{lot.starting_price}} Tokens.
+            <div class="cur_left">
+                {% if lot.is_open %}
+                    Current price: {{lot.starting_price}} Tokens.
+                {% endif %}
             </div>
         </div>
         <hr>

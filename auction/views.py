@@ -82,7 +82,7 @@ def lot_detail(request, pk):
 def lot_edit(request, pk):
         lot = get_object_or_404(Lot_sub, pk=pk)
         if request.method == "POST":
-            form = LotForm(request.POST, instance=lot)
+            form = LotForm(request.POST, request.FILES, instance=lot)
             if form.is_valid():
                 lot = form.save(commit=False)
                 lot.author = request.user
@@ -119,7 +119,7 @@ def lot_new(request):
         if request.method == "POST":
             print('Ima in lot new post')
             winnerform = WinnerForm()
-            form = LotForm(request.POST)
+            form = LotForm(request.POST, request.FILES)
             if form.is_valid():
                 lot = form.save(commit=False)
                 lot.author = request.user

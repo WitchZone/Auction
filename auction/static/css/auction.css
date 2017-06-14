@@ -61,9 +61,22 @@ div {
     padding-bottom: 10px; 
 }
 
-.cur_price {
-    font-size: 16px;
+.cur_right {
+    font-size: 18px;
+    font-weight: bold;
     text-align: right;
+}
+
+.cur_left {
+    font-size: 18px;
+    font-weight: bold;
+    text-align: left;
+}
+
+.cur_center {
+    font-size: 20px;
+    font-weight: bold;
+    text-align: center;
 }
 
 nav {

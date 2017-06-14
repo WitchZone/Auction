@@ -6,13 +6,7 @@
 
 {% block content %}
     <div class="post">
-        
-        <!--img src="{{ lot.image.url }}" class="img-rounded" style="width:300px;height:auto;"-->
-        {% if lot.published_date %}
-            <div class="date">
-                {{ lot.published_date}} by {{lot.author}}
-            </div>
-        {% endif %}
+        <div class="message">{{ mess }}</div>
         <div class="row">
             <div class="h1 col-md-12">{{ lot.title }}
                 {% if lot.is_open == False %}
@@ -20,6 +14,12 @@
                         [Sold] Winner: {{item.winner}} 
                     {% endfor %}
                 {% endif%}
+                {% if ed and lot.is_open%} 
+                    <form id="sold" class="post-form save" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
+                        {% csrf_token %}
+                        <input type="submit" class="btn btn-default" name="submit" value="Sold lot"/>
+                    </form>
+                {% endif %}
                 {% if ed %}
                     {% if lot.is_open %}
                         <a class="btn btn-default" href="{% url 'lot_edit' pk=lot.pk %}"><span class="glyphicon glyphicon-pencil"></span></a>
@@ -27,79 +27,93 @@
                     <a class="btn btn-default" href="{% url 'lot_remove' pk=lot.pk %}"><span class="glyphicon glyphicon-remove"></span></a>
                 {% endif %}
             </div>
-        <div>
+        </div>
+
         <div class="row">
-            <div class="col-md-3">Картинка</div>
+            <div class="col-md-3 pad">
+                <img src="{{ lot.image.url }}" class="img-rounded" style="max-width:100%;max-height:100%;">
+                <div class="cur_center">
+                    {% if ed %}
+                        Views: {{lot.views}}
+                    {% else %}
+                        {% if user.is_authenticated %}
+                            <div class="form">
+                                {% csrf_token %}
+                                <div id="user_views">
+                                    <button class="btn btn-default" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Get author views</button>
+                                </div>
+                            </div>
+                            <script src="/static/js/get_views.js"></script>
+                        {% else %}
+                            Views: {{lot.views}}
+                        {% endif %}
+                    {% endif %}
+                </div>
+            </div>
             <div class="col-md-9">
-                <div class="description">{{ lot.text|linebreaksbr }}</div>
+                <div class="description">Description: {{ lot.text|linebreaksbr }}</div>
             </div>
         </div>
-        
-
-        <div class="cur_price">
-            Current price: {{lot.starting_price}} Tokens
-        </div>
-        <div class="cur_price">
-            End date: {{ lot.end_date}}
-        </div>
         <hr>
-        {% if ed and lot.is_open%} 
-            <form id="sold" class="post-form save" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
-                {% csrf_token %}
-                <input type="submit" class="btn btn-default" name="submit" value="Sold lot"/>
-            </form>
-        {% endif %}
-        {% if lot.end_date and lot.end_date > date_now  and lot.is_open %}
-            <div class="h2">Status: Lot open</div>
-            {% if ed %}
-                <div>Просмотров: {{lot.views}}</div>
-            {% else %}
-                <div class="form">
-                    {% csrf_token %}
-                    <div id="user_views">
-                        <button class="btn btn-default" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Get author views</button>
-                    </div>
+        <div class="row">
+            <div class="col-md-8">
+                <div class="cur_left">
+                    {% if lot.end_date and lot.end_date > date_now  and lot.is_open %}
+                        Status: Lot open
+                    {% else %}
+                        {% if lot.is_open == False %}
+                            Status: The lot is closed
+                        {% else %}
+                            Status: Time is over, wait for confirmation
+                        {% endif %}
+                    {% endif %}
                 </div>
-                <script src="/static/js/get_views.js"></script>
-                <hr>
-                <form id="form" class="post-form" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
-                    {% csrf_token %}
-                    <div class="form-group">
-                        {{ form.as_p }}
-                    </div>
-                    <input type="submit" class="btn btn-default" name="submit" value="Rate" />
-                </form>
-            {% endif %}  
-        {% else %}
-            {% if lot.is_open == False %}
-                <div class="h2">Status: The lot is closed</div>
-            {% else %}
-                <div class="h2">Status: Time is over, wait for confirmation</div>
-            {% endif %}
-        {% endif %}
-
+            </div>
+            <div class="col-md-4">
+                <div class="cur_right">End date: {{ lot.end_date}}</div>
+            </div>
+        </div>
         <hr>
-        {% if backers_list %}
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th width="50%">Partisipant</th>
-                    <th>Rate</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for backer in backers_list %}
-                    <tr>
-                        <td>{{backer.participant}}</td>
-                        <td>{{backer.rate}}</td>
-                    </tr>
-                {% endfor %}
-            </tbody>
-        <table>
-        {% else %}
-            <div class="h4">There are no participant<div>
-        {% endif %}
-        <div class="message">{{ mess }}</div>
+        <div class="row">
+            <div class="col-md-3">
+                {% if ed %}
+                {% else %}
+                    {% if user.is_authenticated and lot.end_date and lot.end_date > date_now  and lot.is_open %}
+                        <form id="form" class="post-form" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                {{ form.as_p }}
+                            </div>
+                            <input type="submit" class="btn btn-default" name="submit" value="Rate" />
+                        </form>
+                    {% endif%}
+                {% endif %}  
+                <div class="cur_center">
+                    Current price: {{lot.starting_price}} Tokens
+                </div>
+            </div>
+            <div class="col-md-9">
+                {% if backers_list %}
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th width="50%">Partisipant</th>
+                            <th>Rate</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for backer in backers_list %}
+                            <tr>
+                                <td>{{backer.participant}}</td>
+                                <td>{{backer.rate}}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <div class="cur_center">There are no participant</div>
+                {% endif %}
+            </div>
+        </div>
     </div>
-    <hr>
 {% endblock %}
