@@ -6,6 +6,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
 from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm
 from .models import UserProfile, Lot_sub, LotRate, Winner
@@ -51,8 +52,9 @@ def lot_detail(request, pk):
             elif button_name == "Sold lot":
                 print('--==I went through button Sold lot==--')
                 bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
+                all_backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')
                 check_sold = False
-                for backer in backers_list:
+                for backer in all_backers_list:
                     bal_curr = UserProfile.objects.filter(user=backer.participant).values('balance')[0]['balance']
                     if bal_curr > backer.rate:
                         print('Sold by', backer.participant, ' behind', backer.rate, 'tokens')
@@ -138,13 +140,13 @@ def lot_new(request):
         return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
 
 def register(request):
-    registered = False
-
+    print("Im in register");
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm()
 
-        if user_form.is_valid():
+        if user_form.is_valid() and user_form.cleaned_data['password'] == user_form.cleaned_data['password_confirmation']:
+            print("OK! REGISTER");
             user = user_form.save()
             user.set_password(user.password)
             user.save()
@@ -154,16 +156,27 @@ def register(request):
             profile.balance = 5;
             profile.save()
 
-            registered = True
+            messages.info(request, "Thanks for registering. You are now logged in.")
+            new_user = authenticate(username=user_form.cleaned_data['username'],
+                                    password=user_form.cleaned_data['password'],
+                                   )
+
+            login(request, new_user)
+            print("OK! LOGIN");
+            return HttpResponseRedirect('/')
+        elif user_form.data['password'] != user_form.data['password_confirmation']:
+            user_form.add_error('password_confirmation', 'The passwords do not match')
+            print("Password do not match")
+        else:
+            print(user_form.errors)
+            print(profile_form.errors)
     else:
         user_form = UserForm()
         profile_form = UserProfileForm()
-
     return render(request,
                   'auction/register.html',
                   {'user_form': user_form,
-                   'profile_form': profile_form,
-                   'registered': registered})
+                   'profile_form': profile_form})
 
 def user_login(request):
     if request.method == 'POST':
@@ -174,16 +187,17 @@ def user_login(request):
 
         if user:
             login(request, user)
-            return HttpResponseRedirect(reverse('lot_list'))
+            messages.info(request, 'You are now logged in')
+            return HttpResponseRedirect('/')
         else:
-            print('Invalid login details: {0}, {1}'.format(username, password))
-            return HttpResponseRedirect(reverse('login'))
+            return HttpResponse('Invalid login details')
     else:
         return render(request, 'auction/login.html', {})
 
 @login_required
 def user_logout(request):
     logout(request)
+    messages.info(request, 'You are now logged out')
     return HttpResponseRedirect(reverse('lot_list'))
 
 
