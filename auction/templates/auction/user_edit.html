@@ -9,32 +9,36 @@
 {% endblock %}
 
 {% block content %}
-    <div class="cur_left">Required fields are marked with a star</div>
-    <form id="user_form" method="post" action"={% url 'user_edit' user.id %}">
+    {% if ed %}
+        <div class="cur_left">Required fields are marked with a star</div>
+        <form id="user_form" method="post" action"={% url 'user_edit' user.id %}">
 
-        {% csrf_token %}
-        {% for field in user_form %}
-            <div>
-                {{ field.errors }}
-                <label for="{{ field.auto_id }}">
-                    {% if field.field.required %}<span class="required">{{ field.label }}</span>
-                    {% else %}{{ field.label }}{% endif %}
-                </label>
-                {{ field }}
-            </div>
-        {% endfor %}
-        
-        {% for field in profile_form %}
-            <div>
-                {{ field.errors }}
-                <label for="{{ field.auto_id }}">
-                    {% if field.field.required %}<span class="required">{{ field.label }}</span>
-                    {% else %}{{ field.label }}{% endif %}
-                </label>
-                {{ field }}
-            </div>
-        {% endfor %}
-        <br />
-        <input type="submit" name="submit" value="Update" />
-    </form>
+            {% csrf_token %}
+            {% for field in user_form %}
+                <div>
+                    {{ field.errors }}
+                    <label for="{{ field.auto_id }}">
+                        {% if field.field.required %}<span class="required">{{ field.label }}</span>
+                        {% else %}{{ field.label }}{% endif %}
+                    </label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            
+            {% for field in profile_form %}
+                <div>
+                    {{ field.errors }}
+                    <label for="{{ field.auto_id }}">
+                        {% if field.field.required %}<span class="required">{{ field.label }}</span>
+                        {% else %}{{ field.label }}{% endif %}
+                    </label>
+                    {{ field }}
+                </div>
+            {% endfor %}
+            <br />
+            <input type="submit" name="submit" value="Update" />
+        </form>
+    {% else %}
+        <div class="message">Hey little pie, this is not your profile.</div>
+    {% endif %}
 {% endblock %}

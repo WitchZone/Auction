@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 
-from .models import Lot_sub, UserProfile, LotRate, Winner
+from .models import Lot_sub, UserProfile, LotRate, Winner, Transaction
 
 class BaseForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -29,6 +29,7 @@ class UserProfileForm(BaseForm):
 
 class LotForm(BaseForm):
     image = forms.ImageField(required=False)
+    end_date = forms.DateTimeField(widget=forms.DateInput(attrs={'type': 'date'}))
     class Meta:
         model = Lot_sub
         fields = ('title', 'text', 'starting_price', 'end_date', 'image')
@@ -57,3 +58,8 @@ class UserProfileUpdateForm(BaseForm):
     class Meta:
         model = UserProfile
         fields = ('image',)
+
+class TransactionForm(BaseForm):
+    class Meta:
+        model = Transaction
+        fields = ()

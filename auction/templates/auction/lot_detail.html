@@ -42,12 +42,10 @@
                             <div class="form">
                                 {% csrf_token %}
                                 <div id="user_views">
-                                    <button class="btn btn-success" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Get author views</button>
+                                    <button class="btn btn-success btn-block" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Contact with author</button>
                                 </div>
                             </div>
                             <script src="/static/js/get_views.js"></script>
-                        {% else %}
-                            Views: {{lot.views}}
                         {% endif %}
                     {% endif %}
                 </div>

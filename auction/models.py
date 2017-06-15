@@ -45,3 +45,12 @@ class Winner(models.Model):
 
     def __str__(self):
         return self.lot_id
+
+class Transaction(models.Model):
+    user = models.ForeignKey('auth.User')
+    tranz_date = models.DateField(default=timezone.now)
+    tokenz = models.PositiveIntegerField()
+
+    def __str__(self):
+        return self.user.username
+

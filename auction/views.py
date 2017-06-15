@@ -18,6 +18,7 @@ def lot_list(request):
     return render(request, 'auction/lot.html', {'lots': lots})
 
 def lot_detail(request, pk):
+    context = {}
     lot = get_object_or_404(Lot_sub, pk=pk)
     user = request.user
     date_now = timezone.now()
@@ -46,11 +47,11 @@ def lot_detail(request, pk):
                     return redirect('lot_detail', pk=lot.pk)
                 elif bal < rate_lot.rate:
                     mess = "You do not have enough tokens"
-                    context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
+                    context = {'ed': ed, 'lot': lot, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
                     return render(request, 'auction/lot_detail.html', context)
                 else:
                     mess = "The rate must be greater than the current price"
-                    context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
+                    context = {'ed': ed, 'lot': lot, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
                     return render(request, 'auction/lot_detail.html', context)
         elif button_name == "Sold lot":
             print('--==I went through button Sold lot==--')
@@ -81,7 +82,7 @@ def lot_detail(request, pk):
             return redirect('lot_detail', pk=lot.pk)
     else:
         form = RateForm()
-        context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win }
+        context = {'ed': ed, 'lot': lot, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win }
     return render(request, 'auction/lot_detail.html', context)
 
 @login_required
@@ -211,9 +212,14 @@ def get_au_views(request):
     if request.method == 'POST':
         lot_id = request.POST.get('lot_id')
         lot = Lot_sub.objects.get(pk=lot_id)
+        user = User.objects.get(username=lot.author)
         lot.views += 1
         lot.save()
-        response = { "views": lot.views }
+        response = { 
+            'first_name': user.first_name, 
+            'email': user.email,
+        }
+        print("Views to " + user.first_name + " OK!")
         return HttpResponse(
             json.dumps(response),
             content_type='application/json'
@@ -221,7 +227,6 @@ def get_au_views(request):
 
 @login_required
 def user_show(request, user_id):
-
     context = {}
     try:
         user = User.objects.get(pk=user_id)
@@ -244,7 +249,10 @@ def user_edit(request, user_id):
 
     user_form = UserUpdateForm(instance=user)
     profile_form = UserProfileUpdateForm(instance=user.userprofile)
-
+    if (user == request.user):
+        ed = True
+    else:
+        ed = False
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=user)
         profile_form = UserProfileUpdateForm(request.POST, instance=user.userprofile)
@@ -252,7 +260,7 @@ def user_edit(request, user_id):
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save(commit=True)
             profile_form.save(commit=True)
-            print("user edit: valid");
+            print("user edit: go")
             return redirect('user_show', user.id)
         else:
             print(user_form.errors)
@@ -260,5 +268,6 @@ def user_edit(request, user_id):
 
     context['user_form'] = user_form
     context['profile_form'] = profile_form
+    context['ed'] = ed
 
     return render(request, 'auction/user_edit.html', context)

@@ -11,7 +11,7 @@
             {% csrf_token %}
             <div class="form-group">
                 <label for="id_balance">Replenish tokens:</label>
-                <input type="number" name="balance" min="0" max="9223372036854775807" class="form-control" placeholder="Enter the tokens"
+                <input type="number" name="balance" min="0" max="50000" class="form-control" placeholder="Enter the tokens"
                     required="" id="id_balance">
             </div>
             <input type="submit" class="btn btn-default" name="submit" value="Replenish"/>

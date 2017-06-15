@@ -60,7 +60,8 @@ div {
 
 .description {
     font-size: 18px;
-    padding-bottom: 10px; 
+    padding-bottom: 10px;
+    text-align: justify;
 }
 
 .cur_right {

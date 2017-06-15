@@ -13,7 +13,10 @@ $(function() {
             data : { lot_id: lot_id,
                      csrfmiddlewaretoken: document.getElementsByName('csrfmiddlewaretoken')[0].value },
             success : function (json) {
-                $('#user_views').text('Views: '+json['views']);
+                var text = "Name: " + json['first_name'] + '<br>'
+                if (json['email'])
+                    text += 'Email: ' + json['email'] + '<br>';
+                $('#user_views').html(text);
                 console.log("success");
             },
             error : function(xhr, errmsg, err) {
