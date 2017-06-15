@@ -42,3 +42,18 @@ class WinnerForm(BaseForm):
     class Meta:
         model = Winner
         fields = ()
+
+class UserUpdateForm(BaseForm):
+    def __init__(self, *args, **kwargs):
+        super(UserUpdateForm, self).__init__(*args, **kwargs)
+        for key in self.fields:
+            self.fields[key].required = True
+    class Meta:
+        model = User
+        fields = ('first_name', 'last_name', 'email')
+
+class UserProfileUpdateForm(BaseForm):
+    image = forms.ImageField(required=False)
+    class Meta:
+        model = UserProfile
+        fields = ('image',)

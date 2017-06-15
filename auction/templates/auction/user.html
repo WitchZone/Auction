@@ -15,7 +15,7 @@
         <div class="h2">
             {{ selected_user.username }}'s profile
             {% if user == selected_user %}
-                <a class="btn btn-default" href=""><span class="glyphicon glyphicon-pencil"></span></a>
+                <a class="btn btn-default" href="{% url 'user_edit' user.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
             {% endif %}
         </div>
         
@@ -33,6 +33,7 @@
                 {% endif %}
             </div>
         </div>
+        <hr>
     {% else %}
         <div class="cur_left">User not found</div>
     {% endif %}

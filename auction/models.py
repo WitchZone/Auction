@@ -10,7 +10,7 @@ class Lot_sub(models.Model):
     text = models.TextField()
     starting_price = models.PositiveIntegerField()
     views = models.PositiveIntegerField(default=0)
-    image = models.ImageField(upload_to='ads/', null=True)
+    image = models.ImageField(upload_to='lotph/', null=True)
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
     end_date = models.DateTimeField(blank=True, null=True)
@@ -25,8 +25,8 @@ class Lot_sub(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-
     balance = models.BigIntegerField()
+    image = models.ImageField(upload_to='userph/', null=True)
 
     def __str__(self):
         return self.user.username

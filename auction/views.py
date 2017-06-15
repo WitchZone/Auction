@@ -9,7 +9,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm
+from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm, UserUpdateForm, UserProfileUpdateForm
 from .models import UserProfile, Lot_sub, LotRate, Winner
 
 # Create your views here.
@@ -46,10 +46,12 @@ def lot_detail(request, pk):
                     return redirect('lot_detail', pk=lot.pk)
                 elif bal < rate_lot.rate:
                     mess = "You do not have enough tokens"
-                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
+                    context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
+                    return render(request, 'auction/lot_detail.html', context)
                 else:
                     mess = "The rate must be greater than the current price"
-                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
+                    context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win}
+                    return render(request, 'auction/lot_detail.html', context)
         elif button_name == "Sold lot":
             print('--==I went through button Sold lot==--')
             bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
@@ -79,7 +81,8 @@ def lot_detail(request, pk):
             return redirect('lot_detail', pk=lot.pk)
     else:
         form = RateForm()
-    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win })
+        context = {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win }
+    return render(request, 'auction/lot_detail.html', context)
 
 @login_required
 def lot_edit(request, pk):
@@ -98,7 +101,8 @@ def lot_edit(request, pk):
             ed = True
         else:
             ed = False
-    return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
+        context = {'form': form, 'ed': ed}
+    return render(request, 'auction/lot_edit.html', context)
 
 @login_required
 def lot_remove(request, pk):
@@ -138,7 +142,8 @@ def lot_new(request):
         print('Ima in lot new else')
         form = LotForm()
         ed = True
-    return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
+        context = {'form': form, 'ed': ed}
+    return render(request, 'auction/lot_edit.html', context)
 
 def register(request):
     print("Im in register");
@@ -215,7 +220,7 @@ def get_au_views(request):
         )
 
 @login_required
-def show_user(request, user_id):
+def user_show(request, user_id):
 
     context = {}
     try:
@@ -227,3 +232,33 @@ def show_user(request, user_id):
         context['user'] = None
 
     return render(request, 'auction/user.html', context)
+
+@login_required
+def user_edit(request, user_id):
+    context = {}
+    try:
+        user = User.objects.get(pk=user_id)
+        context['user'] = user
+    except User.DoesNotExist:
+        context['user'] = None
+
+    user_form = UserUpdateForm(instance=user)
+    profile_form = UserProfileUpdateForm(instance=user.userprofile)
+
+    if request.method == 'POST':
+        user_form = UserUpdateForm(request.POST, instance=user)
+        profile_form = UserProfileUpdateForm(request.POST, instance=user.userprofile)
+        
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save(commit=True)
+            profile_form.save(commit=True)
+            print("user edit: valid");
+            return redirect('user_show', user.id)
+        else:
+            print(user_form.errors)
+            print(profile_form.errors)
+
+    context['user_form'] = user_form
+    context['profile_form'] = profile_form
+
+    return render(request, 'auction/user_edit.html', context)
