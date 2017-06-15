@@ -9,8 +9,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm, UserUpdateForm, UserProfileUpdateForm
-from .models import UserProfile, Lot_sub, LotRate, Winner
+from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm, UserUpdateForm, UserProfileUpdateForm, TransactionForm
+from .models import UserProfile, Lot_sub, LotRate, Winner, Transaction
 
 # Create your views here.
 def lot_list(request):
@@ -116,10 +116,57 @@ def user_balance(request):
     user = request.user
     bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
     if request.method == "POST":
+        limit = 4000
         balance = int(request.POST.get('balance'))
-        new_bal = bal + balance
-        UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
-        return HttpResponseRedirect(reverse('balance'))
+        tranzact = TransactionForm()
+        user_transact_for_day = Transaction.objects.filter(user=user, tranz_date=timezone.now())
+        if user_transact_for_day:
+            day_tranz_sum = 0
+            for user_transact in user_transact_for_day:
+                day_tranz_sum += user_transact.tokenz
+            if day_tranz_sum >= limit:
+                messages.warning(request, 'Transaction limit ' + str(limit) + ' per day. You already have this amount.')
+                return HttpResponseRedirect(reverse('balance'))
+            elif (day_tranz_sum + balance) > limit:
+                lim_bal =limit - day_tranz_sum
+                tranz = tranzact.save(commit=False)
+                tranz.user = user
+                tranz.tranz_date = timezone.now()
+                tranz.tokenz = lim_bal
+                tranz.save()
+                new_bal = bal + lim_bal
+                UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
+                messages.info(request, 'Transaction limit ' + str(limit) + ' per day. You put ' + str(lim_bal) +' of ' + str(balance) + ' tokens')
+                return HttpResponseRedirect(reverse('balance'))
+            else:
+                print("Transaction:", balance, "tokens for", user,"Date ", timezone.now())
+                tranz = tranzact.save(commit=False)
+                tranz.user = user
+                tranz.tranz_date = timezone.now()
+                tranz.tokenz = balance
+                tranz.save()
+                new_bal = bal + balance
+                UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
+                messages.info(request, 'Transaction success. You put ' + str(balance) + ' token. Today you can put ' + str(limit - day_tranz_sum - balance) + ' tokens')
+                return HttpResponseRedirect(reverse('balance'))
+        else:
+            tranz = tranzact.save(commit=False)
+            tranz.user = user
+            tranz.tranz_date = timezone.now()
+            if balance <= limit:
+                tranz.tokenz = balance
+                tranz.save()
+                new_bal = bal + balance
+                UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
+                messages.info(request, 'Transaction success. You put ' + str(balance) + ' tokens. Today you can put ' + str(limit - balance) + ' tokens')
+                return HttpResponseRedirect(reverse('balance'))
+            else:
+                tranz.tokenz = limit
+                tranz.save()
+                new_bal = bal + limit
+                UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
+                messages.warning(request, 'Transaction limit ' + str(limit) + ' per day. You put ' + str(limit) +' of ' + str(balance) + ' tokens')
+                return HttpResponseRedirect(reverse('balance'))
     return render(request, 'auction/balance.html', {'bal': bal})
 
 @login_required

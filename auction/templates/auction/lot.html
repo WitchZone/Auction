@@ -24,7 +24,9 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <img class="img-thumbnail img-resize" src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" alt="" />
+                <a href="{% url 'lot_detail' pk=lot.pk %}">
+                    <img class="img-thumbnail img-resize" src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" alt="" />
+                </a>
             </div>
             <div class="col-md-10">
                 <div class="description">{{ lot.text|linebreaksbr }}</div>
