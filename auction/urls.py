@@ -15,4 +15,5 @@ urlpatterns = [
     url(r'^get_views/$', views.get_au_views, name='get_au_views'),
     url(r'^post/(?P<pk>[0-9]+)/edit/$', views.lot_edit, name='lot_edit'),
     url(r'^post/(?P<pk>\d+)/remove/$', views.lot_remove, name='lot_remove'),
+    url(r'^user/(?P<user_id>\d+)/$', views.show_user, name='show_user'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

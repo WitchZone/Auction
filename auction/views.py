@@ -5,6 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.contrib.auth import authenticate, login, logout
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
@@ -17,87 +18,87 @@ def lot_list(request):
     return render(request, 'auction/lot.html', {'lots': lots})
 
 def lot_detail(request, pk):
-        lot = get_object_or_404(Lot_sub, pk=pk)
-        user = request.user
-        date_now = timezone.now()
-        start_p = Lot_sub.objects.filter(pk=pk).values('starting_price')[0]['starting_price']
-        mess = ""
-        backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')[:10]
-        win = Winner.objects.filter(lot_id=lot)
-        if (lot.author == user):
-            ed = True
-        else:
-            ed = False
-        if request.method == "POST":
-            button_name = request.POST.get('submit')
-            if button_name == "Rate":
-                print("--==I went through button Rate==--")
-                form = RateForm(request.POST);
-                if form.is_valid():
-                    rate_lot = form.save(commit=False)
-                    bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
-                    if rate_lot.rate > start_p and bal >= rate_lot.rate:
-                        rate_lot.participant = user
-                        print(rate_lot.participant)
-                        rate_lot.lot_id = lot
-                        rate_lot.save()
-                        Lot_sub.objects.filter(pk=pk).update(starting_price=rate_lot.rate)
-                        return redirect('lot_detail', pk=lot.pk)
-                    elif bal < rate_lot.rate:
-                        mess = "You do not have enough tokens"
-                        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
-                    else:
-                        mess = "The rate must be greater than the current price"
-                        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
-            elif button_name == "Sold lot":
-                print('--==I went through button Sold lot==--')
+    lot = get_object_or_404(Lot_sub, pk=pk)
+    user = request.user
+    date_now = timezone.now()
+    start_p = Lot_sub.objects.filter(pk=pk).values('starting_price')[0]['starting_price']
+    mess = ""
+    backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')[:10]
+    win = Winner.objects.filter(lot_id=lot)
+    if (lot.author == user):
+        ed = True
+    else:
+        ed = False
+    if request.method == "POST":
+        button_name = request.POST.get('submit')
+        if button_name == "Rate":
+            print("--==I went through button Rate==--")
+            form = RateForm(request.POST);
+            if form.is_valid():
+                rate_lot = form.save(commit=False)
                 bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
-                all_backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')
-                check_sold = False
-                for backer in all_backers_list:
-                    bal_curr = UserProfile.objects.filter(user=backer.participant).values('balance')[0]['balance']
-                    if bal_curr > backer.rate:
-                        print('Sold by', backer.participant, ' behind', backer.rate, 'tokens')
-                        new_bal_curr = bal_curr - backer.rate
-                        new_bal = bal + backer.rate
-                        
-                        UserProfile.objects.filter(user=user.id).update(balance=new_bal)
-                        UserProfile.objects.filter(user=backer.participant).update(balance=new_bal_curr)
-                        Winner.objects.filter(lot_id=lot).update(winner=backer.participant)
-                        Lot_sub.objects.filter(pk=pk).update(is_open=False)
-                        return redirect('lot_detail', pk=lot.pk)
-                    else:
-                        print('--==',backer.participant, ' does not have tokens==--')
-                if check_sold == False:
-                    print('--==No one can redeem==--')
-                    mess = "Users without tokens, or no one paid"
-                    form = RateForm()
+                if rate_lot.rate > start_p and bal >= rate_lot.rate:
+                    rate_lot.participant = user
+                    print(rate_lot.participant)
+                    rate_lot.lot_id = lot
+                    rate_lot.save()
+                    Lot_sub.objects.filter(pk=pk).update(starting_price=rate_lot.rate)
+                    return redirect('lot_detail', pk=lot.pk)
+                elif bal < rate_lot.rate:
+                    mess = "You do not have enough tokens"
+                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
+                else:
+                    mess = "The rate must be greater than the current price"
+                    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win})
+        elif button_name == "Sold lot":
+            print('--==I went through button Sold lot==--')
+            bal = UserProfile.objects.filter(pk=user.id).values('balance')[0]['balance']
+            all_backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')
+            check_sold = False
+            for backer in all_backers_list:
+                bal_curr = UserProfile.objects.filter(user=backer.participant).values('balance')[0]['balance']
+                if bal_curr > backer.rate:
+                    print('Sold by', backer.participant, ' behind', backer.rate, 'tokens')
+                    new_bal_curr = bal_curr - backer.rate
+                    new_bal = bal + backer.rate
                     
-            else:
-                print('--==How did I even find myself here?==--')
-                return redirect('lot_detail', pk=lot.pk)
+                    UserProfile.objects.filter(user=user.id).update(balance=new_bal)
+                    UserProfile.objects.filter(user=backer.participant).update(balance=new_bal_curr)
+                    Winner.objects.filter(lot_id=lot).update(winner=backer.participant)
+                    Lot_sub.objects.filter(pk=pk).update(is_open=False)
+                    return redirect('lot_detail', pk=lot.pk)
+                else:
+                    print('--==',backer.participant, ' does not have tokens==--')
+            if check_sold == False:
+                print('--==No one can redeem==--')
+                mess = "Users without tokens, or no one paid"
+                form = RateForm()
+                
         else:
-            form = RateForm()
-        return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win })
+            print('--==How did I even find myself here?==--')
+            return redirect('lot_detail', pk=lot.pk)
+    else:
+        form = RateForm()
+    return render(request, 'auction/lot_detail.html', {'lot': lot, 'ed': ed, 'date_now': date_now, 'form': form, 'mess': mess, 'backers_list': backers_list, 'win': win })
 
 @login_required
 def lot_edit(request, pk):
-        lot = get_object_or_404(Lot_sub, pk=pk)
-        if request.method == "POST":
-            form = LotForm(request.POST, request.FILES, instance=lot)
-            if form.is_valid():
-                lot = form.save(commit=False)
-                lot.author = request.user
-                lot.published_date = timezone.now()
-                lot.save()
-                return redirect('lot_detail', pk=lot.pk)
+    lot = get_object_or_404(Lot_sub, pk=pk)
+    if request.method == "POST":
+        form = LotForm(request.POST, request.FILES, instance=lot)
+        if form.is_valid():
+            lot = form.save(commit=False)
+            lot.author = request.user
+            lot.published_date = timezone.now()
+            lot.save()
+            return redirect('lot_detail', pk=lot.pk)
+    else:
+        form = LotForm(instance=lot)
+        if (lot.author == request.user):
+            ed = True
         else:
-            form = LotForm(instance=lot)
-            if (lot.author == request.user):
-                ed = True
-            else:
-                ed = False
-        return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
+            ed = False
+    return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
 
 @login_required
 def lot_remove(request, pk):
@@ -118,26 +119,26 @@ def user_balance(request):
 
 @login_required
 def lot_new(request):
-        if request.method == "POST":
-            print('Ima in lot new post')
-            winnerform = WinnerForm()
-            form = LotForm(request.POST, request.FILES)
-            if form.is_valid():
-                lot = form.save(commit=False)
-                lot.author = request.user
-                lot.published_date = timezone.now()
-                lot.save()
+    if request.method == "POST":
+        print('Ima in lot new post')
+        winnerform = WinnerForm()
+        form = LotForm(request.POST, request.FILES)
+        if form.is_valid():
+            lot = form.save(commit=False)
+            lot.author = request.user
+            lot.published_date = timezone.now()
+            lot.save()
 
-                win = winnerform.save(commit=False)
-                win.winner = request.user
-                win.lot_id = lot
-                win.save()
-                return redirect('lot_detail', pk=lot.pk)
-        else:
-            print('Ima in lot new else')
-            form = LotForm()
-            ed = True
-        return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
+            win = winnerform.save(commit=False)
+            win.winner = request.user
+            win.lot_id = lot
+            win.save()
+            return redirect('lot_detail', pk=lot.pk)
+    else:
+        print('Ima in lot new else')
+        form = LotForm()
+        ed = True
+    return render(request, 'auction/lot_edit.html', {'form': form, 'ed': ed})
 
 def register(request):
     print("Im in register");
@@ -212,3 +213,17 @@ def get_au_views(request):
             json.dumps(response),
             content_type='application/json'
         )
+
+@login_required
+def show_user(request, user_id):
+
+    context = {}
+    try:
+        user = User.objects.get(pk=user_id)
+        user_profile = user.userprofile
+        context['selected_user'] = user
+        context['user_profile'] = user_profile
+    except User.DoesNotExist:
+        context['user'] = None
+
+    return render(request, 'auction/user.html', context)
