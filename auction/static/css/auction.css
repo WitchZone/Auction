@@ -33,6 +33,8 @@
     margin-bottom: 0px;
 }
 
+span.required:after { content: " *"; color: red; }
+
 .date {
     text-align: right;
     color: #828282;

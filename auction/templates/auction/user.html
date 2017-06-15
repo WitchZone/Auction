@@ -1,5 +1,7 @@
 {% extends 'auction/base.html' %}
 
+{% load staticfiles %}
+
 {% block title_block %}
     {% if user_profile %}
         {{ selected_user.username }}
@@ -18,10 +20,20 @@
         </div>
         
         <hr>
-        <div class="cur_left">First Name: {{ selected_user.first_name }}</div>
-        <div class="cur_left">Last Name: {{ selected_user.last_name }}</div>
-        <div class="cur_left">Email: {{ selected_user.email }}</div>
+        <div class="row">
+            <div class="col-md-2">
+                <img src="{% if user_profile.image %} {{ user_profile.image.url }} {% else %} {% static 'img/nup.png' %} {% endif %}" class="img-rounded img-resize">
+            </div>
+            <div class="col-md-10">
+                <div class="cur_left">First Name: {{ selected_user.first_name }}</div>
+                <div class="cur_left">Last Name: {{ selected_user.last_name }}</div>
+                <div class="cur_left">Email: {{ selected_user.email }}</div>
+                {% if user == selected_user %}
+                    <div class="cur_left">Balance: {{ user_profile.balance}}</div>
+                {% endif %}
+            </div>
+        </div>
     {% else %}
-        Ad not found
+        <div class="cur_left">User not found</div>
     {% endif %}
 {% endblock %}

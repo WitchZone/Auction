@@ -1,5 +1,7 @@
 {% extends 'auction/base.html' %}
 
+{% load staticfiles %}
+
 {% block title_block %} 
     Home
 {% endblock %}
@@ -22,7 +24,7 @@
         </div>
         <div class="row">
             <div class="col-md-2">
-                <img class="img-thumbnail img-resize" src="{{ lot.image.url }}" alt="" />
+                <img class="img-thumbnail img-resize" src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" alt="" />
             </div>
             <div class="col-md-10">
                 <div class="description">{{ lot.text|linebreaksbr }}</div>

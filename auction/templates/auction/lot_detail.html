@@ -1,5 +1,7 @@
 {% extends 'auction/base.html' %}
 
+{% load staticfiles %}
+
 {% block title_block %} 
     {{ lot.title }}
 {% endblock %}
@@ -31,7 +33,7 @@
 
         <div class="row">
             <div class="col-md-3 pad">
-                <img src="{{ lot.image.url }}" class="img-rounded img-resize">
+                <img src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" class="img-rounded img-resize">
                 <div class="cur_center">
                     {% if ed or lot.is_open == False %}
                         Views: {{lot.views}}
@@ -40,7 +42,7 @@
                             <div class="form">
                                 {% csrf_token %}
                                 <div id="user_views">
-                                    <button class="btn btn-default" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Get author views</button>
+                                    <button class="btn btn-success" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Get author views</button>
                                 </div>
                             </div>
                             <script src="/static/js/get_views.js"></script>
