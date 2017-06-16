@@ -7,7 +7,7 @@
 {% block content %}
     {% if ed %}
     <div class="h1">New lot</div>
-    <form method="POST" class="post-form" enctype="multipart/form-data">
+    <form method="POST" enctype="multipart/form-data">
         {% csrf_token %} 
         {% for field in form.visible_fields %}
             <div>
@@ -19,8 +19,8 @@
                 {{ field }}
             </div>
         {% endfor %}
-        <button type="submit" class="save btn btn-default">Save</button>
-    </form>
+        <br>
+        <input type="submit" class="btn btn-default" value="Update">
     {% else %}
         <div class="message">Hey little pie, this is not your lot.</div>
     {% endif %}

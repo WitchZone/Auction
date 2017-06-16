@@ -59,7 +59,7 @@ def lot_detail(request, pk):
             check_sold = False
             for backer in all_backers_list:
                 bal_curr = UserProfile.objects.filter(user=backer.participant).values('balance')[0]['balance']
-                if bal_curr > backer.rate:
+                if bal_curr >= backer.rate:
                     print('Sold by', backer.participant, ' behind', backer.rate, 'tokens')
                     new_bal_curr = bal_curr - backer.rate
                     new_bal = bal + backer.rate
@@ -144,7 +144,7 @@ def user_balance(request):
                 tranz.save()
                 new_bal = bal + balance
                 UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
-                messages.info(request, 'Transaction success. You put ' + str(balance) + ' token. Today you can put ' + str(limit - day_tranz_sum - balance) + ' tokens')
+                messages.success(request, 'Transaction success. You put ' + str(balance) + ' token. Today you can put ' + str(limit - day_tranz_sum - balance) + ' tokens')
                 return HttpResponseRedirect(reverse('balance'))
         else:
             tranz = tranzact.save(commit=False)
@@ -155,7 +155,7 @@ def user_balance(request):
                 tranz.save()
                 new_bal = bal + balance
                 UserProfile.objects.filter(pk=user.id).update(balance=new_bal)
-                messages.info(request, 'Transaction success. You put ' + str(balance) + ' tokens. Today you can put ' + str(limit - balance) + ' tokens')
+                messages.success(request, 'Transaction success. You put ' + str(balance) + ' tokens. Today you can put ' + str(limit - balance) + ' tokens')
                 return HttpResponseRedirect(reverse('balance'))
             else:
                 tranz.tokenz = limit
@@ -241,7 +241,8 @@ def user_login(request):
             messages.info(request, 'You are now logged in')
             return HttpResponseRedirect('/')
         else:
-            return HttpResponse('Invalid login details')
+            messages.warning(request, 'Invalid login details')
+            return render(request, 'auction/login.html', {})
     else:
         return render(request, 'auction/login.html', {})
 
@@ -299,7 +300,7 @@ def user_edit(request, user_id):
         ed = False
     if request.method == 'POST':
         user_form = UserUpdateForm(request.POST, instance=user)
-        profile_form = UserProfileUpdateForm(request.POST, instance=user.userprofile)
+        profile_form = UserProfileUpdateForm(request.POST, request.FILES, instance=user.userprofile)
         
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save(commit=True)
