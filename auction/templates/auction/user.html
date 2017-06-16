@@ -2,14 +2,6 @@
 
 {% load staticfiles %}
 
-{% block title_block %}
-    {% if user_profile %}
-        {{ selected_user.username }}
-    {% else %}
-        User not found
-    {% endif %}
-{% endblock %}
-
 {% block content %}
      {% if user_profile %}
         <div class="h2">
@@ -34,6 +26,21 @@
             </div>
         </div>
         <hr>
+        <form id="form" method="post" action"={% url 'user_show' user.id %}">
+            {% csrf_token %}
+            <div class="btn-group" data-toggle="buttons">
+                <input type="submit" class="btn btn-primary {{all}}" name="submit" value="All">
+                <input type="submit" class="btn btn-primary {{open}}" name="submit" value="Open">
+                <input type="submit" class="btn btn-primary {{sold}}" name="submit" value="Sold">
+            </div>
+        </form>
+        {% if lots %}
+            {% block list %}
+            {% endblock %}
+        {% else %}
+            <br>
+            <div class="cur_left">User has no lots</div>
+        {% endif %}
     {% else %}
         <div class="cur_left">User not found</div>
     {% endif %}

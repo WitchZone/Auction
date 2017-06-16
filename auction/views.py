@@ -276,12 +276,23 @@ def user_show(request, user_id):
     try:
         user = User.objects.get(pk=user_id)
         user_profile = user.userprofile
+        button_name = request.POST.get('submit')
+        if button_name == "Open":
+            lots = Lot_sub.objects.filter(author=user, is_open=True)
+            context['open'] = "active"
+        elif button_name == "Sold":
+            lots = Lot_sub.objects.filter(author=user, is_open=False)
+            context['sold'] = "active"
+        else:
+            lots = Lot_sub.objects.filter(author=user)
+            context['all'] = "active"
         context['selected_user'] = user
         context['user_profile'] = user_profile
+        context['lots'] = lots
     except User.DoesNotExist:
         context['user'] = None
 
-    return render(request, 'auction/user.html', context)
+    return render(request, 'auction/user_lot.html', context)
 
 @login_required
 def user_edit(request, user_id):
