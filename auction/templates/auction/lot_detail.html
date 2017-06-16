@@ -8,12 +8,11 @@
 
 {% block content %}
     <div class="post">
-        <div class="message">{{ mess }}</div>
         <div class="row">
             <div class="h1 col-md-12">{{ lot.title }}
                 {% if lot.is_open == False %}
                     {% for item in win %} 
-                        [Sold] Winner: {{item.winner}} 
+                        [Sold] Winner: <a class="user" href="{% url 'user_show' item.winner.id %}">{{item.winner}}</a> 
                     {% endfor %}
                 {% endif%}
                 {% if ed and lot.is_open%} 

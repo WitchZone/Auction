@@ -58,6 +58,9 @@ div {
     color: #999;
 }
 
+.user {
+    color: #059;
+}
 .description {
     font-size: 18px;
     padding-bottom: 10px;
@@ -90,3 +93,4 @@ div {
 nav {
     font-family: 'PT Sans', sans-serif;
 }
+
