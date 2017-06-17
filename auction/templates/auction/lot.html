@@ -48,7 +48,7 @@
                         Current price: {{lot.starting_price}} Tokens.
                     {% endif %}
                 </div>
-                <div class="col-md-6 date">{{ lot.published_date }} by <a href="{% url 'user_show' lot.author.id %}">{{ lot.author }}<a></div>
+                <div class="col-md-6 date">{{ lot.published_date }} by <a href="{% url 'user_show' lot.author.id %}">{{ lot.author }}</a></div>
             </div>
             <hr>
         {% endfor %}

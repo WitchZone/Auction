@@ -29,22 +29,28 @@
                 {% endif %}
             </div>
         </div>
-
+        <div class="row">
+            <div class="col-md-12 date">{{ lot.published_date }} by <a href="{% url 'user_show' lot.author.id %}">{{ lot.author }}</a></div>
+        </div>
         <div class="row">
             <div class="col-md-3 pad">
                 <img src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" class="img-rounded img-resize">
                 <div class="cur_center">
-                    {% if ed or lot.is_open == False %}
+                    {% if ed %}
                         Views: {{lot.views}}
                     {% else %}
                         {% if user.is_authenticated %}
-                            <div class="form">
-                                {% csrf_token %}
-                                <div id="user_views">
-                                    <button class="btn btn-success btn-block" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Contact with author</button>
+                            {% if lot.is_open %}
+                                <div class="form">
+                                    {% csrf_token %}
+                                    <div id="user_views">
+                                        <button class="btn btn-success btn-block" id="get_views" data-ad-id="{{ lot.id }}" value="Get view">Contact with author</button>
+                                    </div>
                                 </div>
-                            </div>
-                            <script src="/static/js/get_views.js"></script>
+                                <script src="/static/js/get_views.js"></script>
+                            {% else %}
+                                Views: {{lot.views}}
+                            {% endif %}
                         {% endif %}
                     {% endif %}
                 </div>
@@ -63,7 +69,7 @@
                         {% if lot.is_open == False %}
                             Status: Closed
                         {% else %}
-                            Status: Time is over, wait for confirmation
+                            Status: Time is over, wait
                         {% endif %}
                     {% endif %}
                 </div>
