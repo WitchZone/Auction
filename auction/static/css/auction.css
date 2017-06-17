@@ -94,3 +94,6 @@ nav {
     font-family: 'PT Sans', sans-serif;
 }
 
+.btn-primary:active {
+    background-color: #222; 
+}

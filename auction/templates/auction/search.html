@@ -1,0 +1,24 @@
+{% extends 'auction/base.html' %}
+
+{% block title_block %}
+    Search
+{% endblock %}
+
+{% block content %}
+    <div class="h2">Search results:</div>
+    {% if lots %}
+        <div class="cur_left">
+            Found 
+            {% if lots.count > 1 %}
+                {{ lots.count }} lots
+            {% else %}
+                1 lot
+            {% endif %}
+            matching your query
+        </div>
+        <hr>
+        {% include 'auction/lot_include.html' %}
+    {% else %}
+        <div class="cur_left">No lots found</div>
+    {% endif %}
+{% endblock %}

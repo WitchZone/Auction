@@ -8,14 +8,26 @@ from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from simple_search import search_filter
 
 from .forms import UserForm, UserProfileForm, LotForm, RateForm, WinnerForm, UserUpdateForm, UserProfileUpdateForm, TransactionForm
 from .models import UserProfile, Lot_sub, LotRate, Winner, Transaction
 
 # Create your views here.
 def lot_list(request):
-    lots = Lot_sub.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
-    return render(request, 'auction/lot.html', {'lots': lots})
+    context = {}
+    button_name = request.POST.get('submit')
+    if button_name == "Open":
+        lots = Lot_sub.objects.filter(published_date__lte=timezone.now(), is_open=True).order_by('-published_date')
+        context['open'] = "active"
+    elif button_name == "Sold":
+        lots = Lot_sub.objects.filter(published_date__lte=timezone.now(), is_open=False).order_by('-published_date')
+        context['sold'] = "active"
+    else:
+        lots = Lot_sub.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
+        context['all'] = "active"
+    context['lots'] = lots
+    return render(request, 'auction/lot.html', context)
 
 def lot_detail(request, pk):
     context = {}
@@ -270,7 +282,6 @@ def get_au_views(request):
             content_type='application/json'
         )
 
-@login_required
 def user_show(request, user_id):
     context = {}
     try:
@@ -278,13 +289,13 @@ def user_show(request, user_id):
         user_profile = user.userprofile
         button_name = request.POST.get('submit')
         if button_name == "Open":
-            lots = Lot_sub.objects.filter(author=user, is_open=True)
+            lots = Lot_sub.objects.filter(author=user, is_open=True).order_by('-published_date')
             context['open'] = "active"
         elif button_name == "Sold":
-            lots = Lot_sub.objects.filter(author=user, is_open=False)
+            lots = Lot_sub.objects.filter(author=user, is_open=False).order_by('-published_date')
             context['sold'] = "active"
         else:
-            lots = Lot_sub.objects.filter(author=user)
+            lots = Lot_sub.objects.filter(author=user).order_by('-published_date')
             context['all'] = "active"
         context['selected_user'] = user
         context['user_profile'] = user_profile
@@ -292,7 +303,7 @@ def user_show(request, user_id):
     except User.DoesNotExist:
         context['user'] = None
 
-    return render(request, 'auction/user_lot.html', context)
+    return render(request, 'auction/user.html', context)
 
 @login_required
 def user_edit(request, user_id):
@@ -327,3 +338,12 @@ def user_edit(request, user_id):
     context['ed'] = ed
 
     return render(request, 'auction/user_edit.html', context)
+
+def search(request):
+    query = request.GET['query']
+    search_fields = ['title', 'text']
+    f = search_filter(search_fields, query)
+    lots = Lot_sub.objects.filter(f)
+    context = { 'lots': lots }
+
+    return render(request, 'auction/search.html', context)

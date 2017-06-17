@@ -17,4 +17,5 @@ urlpatterns = [
     url(r'^lot/(?P<pk>\d+)/remove/$', views.lot_remove, name='lot_remove'),
     url(r'^user/(?P<user_id>\d+)/$', views.user_show, name='user_show'),
     url(r'^user/edit/(?P<user_id>\d+)/$', views.user_edit, name='user_edit'),
+    url(r'^search/', views.search, name='search'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

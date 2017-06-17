@@ -2,46 +2,57 @@
 
 {% load staticfiles %}
 
+{% block title_block %}
+    {% if user_profile %}
+        {{ selected_user.username }}
+    {% else %}
+        User not found
+    {% endif %}
+{% endblock %}
+
 {% block content %}
-     {% if user_profile %}
-        <div class="h2">
-            {{ selected_user.username }}'s profile
-            {% if user == selected_user %}
-                <a class="btn btn-default" href="{% url 'user_edit' user.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
-            {% endif %}
-        </div>
-        
-        <hr>
-        <div class="row">
-            <div class="col-md-2">
-                <img src="{% if user_profile.image %} {{ user_profile.image.url }} {% else %} {% static 'img/nup.png' %} {% endif %}" class="img-rounded img-resize">
-            </div>
-            <div class="col-md-10">
-                <div class="cur_left">First Name: {{ selected_user.first_name }}</div>
-                <div class="cur_left">Last Name: {{ selected_user.last_name }}</div>
-                <div class="cur_left">Email: {{ selected_user.email }}</div>
+    {% if user.is_authenticated %}
+        {% if user_profile %}
+            <div class="h2">
+                {{ selected_user.username }}'s profile
                 {% if user == selected_user %}
-                    <div class="cur_left">Balance: {{ user_profile.balance}}</div>
+                    <a class="btn btn-default" href="{% url 'user_edit' user.id %}"><span class="glyphicon glyphicon-pencil"></span></a>
                 {% endif %}
             </div>
-        </div>
-        <hr>
-        <form id="form" method="post" action"={% url 'user_show' user.id %}">
-            {% csrf_token %}
-            <div class="btn-group" data-toggle="buttons">
-                <input type="submit" class="btn btn-primary {{all}}" name="submit" value="All">
-                <input type="submit" class="btn btn-primary {{open}}" name="submit" value="Open">
-                <input type="submit" class="btn btn-primary {{sold}}" name="submit" value="Sold">
+            
+            <hr>
+            <div class="row">
+                <div class="col-md-2">
+                    <img src="{% if user_profile.image %} {{ user_profile.image.url }} {% else %} {% static 'img/nup.png' %} {% endif %}" class="img-rounded img-resize">
+                </div>
+                <div class="col-md-10">
+                    <div class="cur_left">First Name: {{ selected_user.first_name }}</div>
+                    <div class="cur_left">Last Name: {{ selected_user.last_name }}</div>
+                    <div class="cur_left">Email: {{ selected_user.email }}</div>
+                    {% if user == selected_user %}
+                        <div class="cur_left">Balance: {{ user_profile.balance}}</div>
+                    {% endif %}
+                </div>
             </div>
-        </form>
-        {% if lots %}
-            {% block list %}
-            {% endblock %}
+            <hr>
+            <form id="form" method="post" action"={% url 'user_show' user.id %}">
+                {% csrf_token %}
+                <div class="btn-group" data-toggle="buttons">
+                    <input type="submit" class="btn btn-primary {{all}}" name="submit" value="All">
+                    <input type="submit" class="btn btn-primary {{open}}" name="submit" value="Open">
+                    <input type="submit" class="btn btn-primary {{sold}}" name="submit" value="Sold">
+                </div>
+            </form>
+            {% if lots %}
+                {% include 'auction/lot_include.html' %}
+            {% else %}
+                <br>
+                <div class="cur_left">User has no lots</div>
+            {% endif %}
         {% else %}
-            <br>
-            <div class="cur_left">User has no lots</div>
+            <div class="cur_left">User not found</div>
         {% endif %}
     {% else %}
-        <div class="cur_left">User not found</div>
+        <div class="cur_left">You don't have the right to view profiles, <a href="{% url 'login' %}">login</a>.</div>
     {% endif %}
 {% endblock %}

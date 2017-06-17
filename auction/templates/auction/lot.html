@@ -7,6 +7,15 @@
 {% endblock %}
 
 {% block content %}
+    <form id="form" method="post" action"={% url 'lot_list' %}">
+        {% csrf_token %}
+        <div class="btn-group" data-toggle="buttons">
+            <input type="submit" class="btn btn-primary {{all}}" name="submit" value="All">
+            <input type="submit" class="btn btn-primary {{open}}" name="submit" value="Open">
+            <input type="submit" class="btn btn-primary {{sold}}" name="submit" value="Sold">
+        </div>
+    </form>
+    <hr>
     {% for lot in lots %}
         <div class="row">
             <div class="col-md-8">
