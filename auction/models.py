@@ -37,14 +37,14 @@ class LotRate(models.Model):
     rate = models.PositiveIntegerField()
 
     def __str__(self):
-        return self.lot_id
+        return self.participant.username
 
 class Winner(models.Model):
     winner = models.ForeignKey('auth.User')
     lot_id = models.OneToOneField('Lot_sub')
 
     def __str__(self):
-        return self.lot_id
+        return self.lot_id.title
 
 class Transaction(models.Model):
     user = models.ForeignKey('auth.User')

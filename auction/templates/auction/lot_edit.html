@@ -6,7 +6,8 @@
 
 {% block content %}
     {% if ed %}
-    <div class="h1">New lot</div>
+    <div class="h2">Edit lot</div>
+    <hr>
     <form method="POST" enctype="multipart/form-data">
         {% csrf_token %} 
         {% for field in form.visible_fields %}

@@ -18,7 +18,7 @@
                 {% if ed and lot.is_open%} 
                     <form id="sold" class="post-form save" method="post" action"={% url 'lot_detail' pk=lot.pk %}">
                         {% csrf_token %}
-                        <input type="submit" class="btn btn-default" name="submit" value="Sold lot"/>
+                        <input type="submit" class="btn btn-primary" name="submit" value="Sold lot"/>
                     </form>
                 {% endif %}
                 {% if ed %}

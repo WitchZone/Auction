@@ -33,7 +33,10 @@
     margin-bottom: 0px;
 }
 
-span.required:after { content: " *"; color: red; }
+span.required:after { 
+    content: " *"; 
+    color: red; 
+}
 
 .date {
     text-align: right;
@@ -92,8 +95,4 @@ div {
 
 nav {
     font-family: 'PT Sans', sans-serif;
-}
-
-.btn-primary:active {
-    background-color: #222; 
 }

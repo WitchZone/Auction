@@ -44,7 +44,7 @@ def lot_detail(request, pk):
     if request.method == "POST":
         button_name = request.POST.get('submit')
         if button_name == "Rate":
-            print("--==I went through button Rate==--")
+            print("Rate")
             form = RateForm(request.POST);
             if form.is_valid():
                 rate_lot = form.save(commit=False)
@@ -81,13 +81,12 @@ def lot_detail(request, pk):
                     Lot_sub.objects.filter(pk=pk).update(is_open=False)
                     return redirect('lot_detail', pk=lot.pk)
                 else:
-                    print('--==',backer.participant, ' does not have tokens==--')
+                    print(backer.participant, ' does not have tokens')
             if check_sold == False:
-                print('--==No one can redeem==--')
                 messages.warning(request, 'Users without tokens, or no one paid')
                 return redirect('lot_detail', pk=lot.pk)
         else:
-            print('--==How did I even find myself here?==--')
+            print('How did I even find myself here?')
             return redirect('lot_detail', pk=lot.pk)
     else:
         form = RateForm()
@@ -117,8 +116,17 @@ def lot_edit(request, pk):
 @login_required
 def lot_remove(request, pk):
     lot = get_object_or_404(Lot_sub, pk=pk)
+    win = get_object_or_404(Winner, lot_id=lot) 
+    win.delete()
+    backers_list = LotRate.objects.filter(lot_id=lot).order_by('-rate')
+    if backers_list:
+        for backer in backers_list:
+            back = get_object_or_404(LotRate, pk=backer.pk)
+            back.delete();
+    lot.image.delete()
     lot.delete()
-    return redirect('lot_list')
+    messages.info(request, 'Lot ' + str(lot) + ' delete')
+    return HttpResponseRedirect('/')
 
 @login_required
 def user_balance(request):

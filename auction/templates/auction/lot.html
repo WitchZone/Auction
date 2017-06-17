@@ -16,39 +16,43 @@
         </div>
     </form>
     <hr>
-    {% for lot in lots %}
-        <div class="row">
-            <div class="col-md-8">
-                <div class="h1">
-                    <a href="{% url 'lot_detail' pk=lot.pk %}">
-                        {{ lot.title }}
-                        {% if lot.is_open == False %}
-                            [Sold]
-                        {% endif%}
-                    </a>
+    {% if lots %}
+        {% for lot in lots %}
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="h1">
+                        <a href="{% url 'lot_detail' pk=lot.pk %}">
+                            {{ lot.title }}
+                            {% if lot.is_open == False %}
+                                [Sold]
+                            {% endif%}
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-4">
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="row">
+                <div class="col-md-2">
+                    <a href="{% url 'lot_detail' pk=lot.pk %}">
+                        <img class="img-thumbnail img-resize" src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" alt="" />
+                    </a>
+                </div>
+                <div class="col-md-10">
+                    <div class="description">{{ lot.text|linebreaksbr }}</div>
+                </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-2">
-                <a href="{% url 'lot_detail' pk=lot.pk %}">
-                    <img class="img-thumbnail img-resize" src="{% if lot.image %} {{ lot.image.url }} {% else %} {% static 'img/nia.png' %} {% endif %}" alt="" />
-                </a>
+            <div class ="row">
+                <div class="col-md-6 cur_left">
+                    {% if lot.is_open %}
+                        Current price: {{lot.starting_price}} Tokens.
+                    {% endif %}
+                </div>
+                <div class="col-md-6 date">{{ lot.published_date }} by <a href="{% url 'user_show' lot.author.id %}">{{ lot.author }}<a></div>
             </div>
-            <div class="col-md-10">
-                <div class="description">{{ lot.text|linebreaksbr }}</div>
-            </div>
-        </div>
-        <div class ="row">
-            <div class="col-md-6 cur_left">
-                {% if lot.is_open %}
-                    Current price: {{lot.starting_price}} Tokens.
-                {% endif %}
-            </div>
-            <div class="col-md-6 date">{{ lot.published_date }} by <a href="{% url 'user_show' lot.author.id %}">{{ lot.author }}<a></div>
-        </div>
-        <hr>
-    {% endfor %}
+            <hr>
+        {% endfor %}
+    {% else %}
+        <div class="cur_left">No lots found</div>
+    {% endif %}
 {% endblock content %}
