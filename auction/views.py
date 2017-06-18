@@ -122,7 +122,7 @@ def lot_remove(request, pk):
     if backers_list:
         for backer in backers_list:
             back = get_object_or_404(LotRate, pk=backer.pk)
-            back.delete();
+            back.delete()
     lot.image.delete()
     lot.delete()
     messages.info(request, 'Lot ' + str(lot) + ' delete')
@@ -211,20 +211,20 @@ def lot_new(request):
     return render(request, 'auction/lot_edit.html', context)
 
 def register(request):
-    print("Im in register");
+    print("Im in register")
     if request.method == 'POST':
         user_form = UserForm(data=request.POST)
         profile_form = UserProfileForm()
 
         if user_form.is_valid() and user_form.cleaned_data['password'] == user_form.cleaned_data['password_confirmation']:
-            print("OK! REGISTER");
+            print("OK! REGISTER")
             user = user_form.save()
             user.set_password(user.password)
             user.save()
 
             profile = profile_form.save(commit=False)
             profile.user = user
-            profile.balance = 5;
+            profile.balance = 5
             profile.save()
 
             messages.info(request, "Thanks for registering. You are now logged in.")
@@ -233,7 +233,7 @@ def register(request):
                                    )
 
             login(request, new_user)
-            print("OK! LOGIN");
+            print("OK! LOGIN")
             return HttpResponseRedirect('/')
         elif user_form.data['password'] != user_form.data['password_confirmation']:
             user_form.add_error('password_confirmation', 'The passwords do not match')

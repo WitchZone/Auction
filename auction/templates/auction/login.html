@@ -7,7 +7,7 @@
 {% block content %}
     <div class="cur_left">Login:</div>
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-md-12">
             <form id="login_form" class="post-form" method="post" action"={% url 'login' %}">
                 {% csrf_token %}
                 <div class="form-group">
